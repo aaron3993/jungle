@@ -10,6 +10,8 @@ Rails.application.routes.draw do
     post   :remove_item
   end
 
+  resources :users, only: [:create, :new]
+
   resources :orders, only: [:create, :show]
 
   resource :about, only: [:show]
