@@ -7,8 +7,13 @@ class User < ActiveRecord::Base
   # validates :password_confirmation: { case_sensitive: true }
   # validates :password, password_confirmation: { case_sensitive: true }
 
-  # validates_presence_of :password_confirmation, :if => :password_changed?
-  
+  def self.authenticate_with_credentials(email, password)
+    user = User.find_by_email(email)
+    if user && user.authenticate(password)
+      return user
+    end
+  end
+
   has_secure_password
   
 end
