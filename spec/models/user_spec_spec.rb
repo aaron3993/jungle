@@ -159,11 +159,11 @@ RSpec.describe User, type: :model do
         @user = User.new
         @user.first_name = "Aaron"
         @user.last_name = "Sham"
-        @user.email = "A"
+        @user.email = "a"
         @user.password = "aaa"
         @user.password_confirmation = "aaa"
         @user.save
-        expect(User.authenticate_with_credentials("a", "aaa")).to eq(@user)
+        expect(User.authenticate_with_credentials("A", "aaa")).to eq(@user)
       end
     end
   end

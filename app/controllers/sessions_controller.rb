@@ -8,8 +8,8 @@ class SessionsController < ApplicationController
       session[:user_id] = user.id
       redirect_to '/'
     else
-        # failure, render login form
-        redirect_to '/login'
+      # failure, render login form
+      redirect_to '/login'
     end
   end
 
