@@ -22,7 +22,7 @@ RSpec.describe User, type: :model do
       @user.save
       expect(@user.errors.full_messages).to include("Password confirmation can't be blank")
     end
-    it "should not be logged in if password and password_confirmation fields don't match" do
+    it "should not be able to register if password and password_confirmation fields don't match" do
       @user = User.new
       @user.first_name = "Aaron"
       @user.last_name = "Sham"
@@ -32,7 +32,7 @@ RSpec.describe User, type: :model do
       @user.save
       expect(@user.errors.full_messages).to include("Password confirmation doesn't match Password")
     end
-    it "should be logged in if password and password_confirmation fields match" do
+    it "should be able to register if password and password_confirmation fields match" do
       @user = User.new
       @user.first_name = "Aaron"
       @user.last_name = "Sham"
@@ -42,7 +42,7 @@ RSpec.describe User, type: :model do
       @user.save
       expect(@user).to be_valid
     end
-    it "should not be able to log in if they use a case insensitive email" do
+    it "should not be able to register if a case insensitive email already exists" do
       @user = User.new
       @user.first_name = "Aaron"
       @user.last_name = "Sham"
@@ -50,10 +50,18 @@ RSpec.describe User, type: :model do
       @user.password = "aaa"
       @user.password_confirmation = "aaa"
       @user.save
-      @nonexisting_user = User.find_by_email("A")
-      expect(@nonexisting_user).to eq nil
+      @user2 = User.new
+      @user2.first_name = "aron"
+      @user2.last_name = "ham"
+      @user2.email = "A"
+      @user2.password = "aaa"
+      @user2.password_confirmation = "aaa"
+      @user2.save
+      # @existing_user = User.find_by_email("A")
+      # expect(@existing_user).to eq nil
+      expect(@user2).not_to be_valid
     end
-    it "should be able to log in if they use an email with the right casing" do
+    it "should be able to register if they use an email with the right casing" do
       @user = User.new
       @user.first_name = "Aaron"
       @user.last_name = "Sham"
@@ -72,6 +80,7 @@ RSpec.describe User, type: :model do
       @user.password = "aaa"
       @user.password_confirmation = "aaa"
       @user.save
+      puts @user.inspect
       expect(@user.errors.full_messages).to include("Email can't be blank")
     end
     it "should have a first name field when registering" do
@@ -106,7 +115,56 @@ RSpec.describe User, type: :model do
     end
 
     describe '.authenticate_with_credentials' do
-      # examples for this class method here
+      it "should log in the user with the right credentials" do
+        @user = User.new
+        @user.first_name = "Aaron"
+        @user.last_name = "Sham"
+        @user.email = "a"
+        @user.password = "aaa"
+        @user.password_confirmation = "aaa"
+        @user.save
+        expect(User.authenticate_with_credentials("a", "aaa")).to eq(@user)
+      end
+      it "should not log in the user with the wrong email" do
+        @user = User.new
+        @user.first_name = "Aaron"
+        @user.last_name = "Sham"
+        @user.email = "b"
+        @user.password = "aaa"
+        @user.password_confirmation = "aaa"
+        @user.save
+        expect(User.authenticate_with_credentials("a", "aaa")).to eq(nil)
+      end
+      it "should not log in the user with the wrong password" do
+        @user = User.new
+        @user.first_name = "Aaron"
+        @user.last_name = "Sham"
+        @user.email = "a"
+        @user.password = "aaa"
+        @user.password_confirmation = "aab"
+        @user.save
+        expect(User.authenticate_with_credentials("a", "aaa")).to eq(nil)
+      end
+      it "should log in the user with trailing spaces on the email" do
+        @user = User.new
+        @user.first_name = "Aaron"
+        @user.last_name = "Sham"
+        @user.email = "a"
+        @user.password = "aaa"
+        @user.password_confirmation = "aaa"
+        @user.save
+        expect(User.authenticate_with_credentials(" a ", "aaa")).to eq(@user)
+      end
+      it "should log in the user with different casing for the email" do
+        @user = User.new
+        @user.first_name = "Aaron"
+        @user.last_name = "Sham"
+        @user.email = "A"
+        @user.password = "aaa"
+        @user.password_confirmation = "aaa"
+        @user.save
+        expect(User.authenticate_with_credentials("a", "aaa")).to eq(@user)
+      end
     end
   end
 end
