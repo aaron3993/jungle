@@ -1,12 +1,18 @@
-<h1>Signup!</h1>
-
-<%= form_for :user, url: '/users' do |f| %>
-
-  First name: <%= f.text_field :first_name %>
-  Last name: <%= f.text_field :last_name %>
-  Email: <%= f.text_field :email %>
-  Password: <%= f.password_field :password %>
-  Password Confirmation: <%= f.password_field :password_confirmation %>
-  <%= f.submit "Submit" %>
-
-<% end %>
+<div class="text-center">
+  <h1>Signup!</h1>
+  <div class="d-flex flex-column">
+    <%= form_for :user, url: '/users' do |f| %>
+      <div>First name:</div>
+      <div><%= f.text_field :first_name %></div>
+      <div>Last name:</div>
+      <div><%= f.text_field :last_name %></div>
+      <div>Email:</div>
+      <div><%= f.text_field :email %></div>
+      <div>Password:</div>
+      <div><%= f.password_field :password %></div>
+      <div>Password Confirmation:</div>
+      <div><%= f.password_field :password_confirmation %></div>
+      <div><%= f.submit "Submit" %></div>
+    <% end %>
+  </div>
+</div>
