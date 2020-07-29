@@ -54,7 +54,8 @@ class OrdersController < ApplicationController
     end
     order.save!
     if order.save
-      UserMailer.welcome_email(@user).deliver_later
+      user = User.find(session[:user_id])
+      UserMailer.welcome_email(user).deliver_later
     end
     order
   end
